@@ -1,0 +1,14 @@
+# Compiled output
+dist/
+
+# Dependencies
+node_modules/
+
+# clasp local credentials (contains OAuth tokens — never commit)
+.clasprc.json
+
+# clasp project config (contains user-specific script IDs — use .clasp.json.example as a template)
+.clasp.json
+
+# Source maps
+*.js.map
