@@ -12,3 +12,4 @@ LICENSE
 .gitignore
 .claspignore
 .clasp.json.example
+test/**

@@ -75,7 +75,15 @@ Your `.clasp.json` should look like this:
 
 ### Create a New Apps Script Project
 
-To create a new Apps Script project linked to a Google Sheet, run the following after logging in:
+> **Note:** This is a one-time setup step. Skip this if you are linking to an existing project (see above).
+
+To create a new Apps Script project, run:
+
+```bash
+npm run clasp:create
+```
+
+To link the new project to an existing Google Sheet, pass the sheet ID via the `--parentId` flag:
 
 ```bash
 npx clasp create --title "sotw-mod-tools" --type sheets --parentId "<GOOGLE_SHEET_ID>"
@@ -166,6 +174,7 @@ npm run clasp:open
 | `npm run lint` | Run ESLint on source files |
 | `npm run lint:fix` | Run ESLint and auto-fix issues |
 | `npm run clasp:login` | Authenticate with your Google account |
+| `npm run clasp:create` | Create a new Apps Script project (one-time setup) |
 | `npm run clasp:push` | Push compiled code to Apps Script |
 | `npm run clasp:pull` | Pull latest code from Apps Script |
 | `npm run clasp:deploy` | Create a new versioned deployment |

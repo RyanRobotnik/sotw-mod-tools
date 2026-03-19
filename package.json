@@ -17,6 +17,7 @@
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint 'src/**/*.ts' --fix",
     "clasp:login": "clasp login",
+    "clasp:create": "clasp create --title \"sotw-mod-tools\" --type sheets",
     "clasp:push": "clasp push",
     "clasp:pull": "clasp pull",
     "clasp:deploy": "clasp deploy",
