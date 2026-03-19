@@ -1,0 +1,46 @@
+{
+  "name": "sotw-mod-tools",
+  "version": "1.0.0",
+  "description": "Google Apps Script tools for Google Sheets. Used for managing the Screenshot of the Week competition on Arqade (Gaming Stack Exchange)",
+  "license": "AGPL-3.0",
+  "author": "RyanRobotnik",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RyanRobotnik/sotw-mod-tools.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc && cp appsscript.json dist/",
+    "test": "jest --passWithNoTests",
+    "lint": "eslint 'src/**/*.ts'",
+    "lint:fix": "eslint 'src/**/*.ts' --fix",
+    "clasp:login": "clasp login",
+    "clasp:create": "clasp create --title \"sotw-mod-tools\" --type sheets",
+    "clasp:push": "clasp push",
+    "clasp:pull": "clasp pull",
+    "clasp:deploy": "clasp deploy",
+    "clasp:open": "clasp open",
+    "deploy": "npm run build && npm run clasp:push"
+  },
+  "devDependencies": {
+    "@google/clasp": "^3.2.0",
+    "@types/google-apps-script": "^1.0.83",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-googleappsscript": "^1.0.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.3.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*.test.ts"
+    ]
+  }
+}
