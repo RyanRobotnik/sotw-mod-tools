@@ -1,0 +1,15 @@
+<div style="background-color: <?= bgColor ?>; padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+  <div style="font-size: 13px; border-bottom: 1px solid rgba(0,0,0,0.1); margin-bottom: 8px; padding-bottom: 8px;">
+    <strong><?= name ?></strong> — Win #<?= count ?>
+  </div>
+  <div style="font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+    <strong>Award these badges:</strong><br>
+    <? badges.forEach(function(badge) { ?>
+      <?= badge ?><br>
+    <? }); ?>
+  </div>
+  <a href="<?= link ?>" target="_blank" 
+     style="display:block; text-align:center; padding: 10px; background: #1a73e8; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+     Grant Badges
+  </a>
+</div>

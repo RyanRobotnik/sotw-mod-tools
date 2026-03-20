@@ -1,15 +1,3 @@
 # Files to exclude when pushing to Apps Script via clasp
+**/*.ts
 node_modules/**
-src/**
-.git/**
-*.ts
-tsconfig.json
-package.json
-package-lock.json
-.eslintrc.json
-README.md
-LICENSE
-.gitignore
-.claspignore
-.clasp.json.example
-test/**
