@@ -1,5 +1,8 @@
-/* global SuccessCard */
-const WinnerController = {
+import { UrlService } from './services/UrlService'
+import { BadgeService } from './services/BadgeService'
+import { SuccessCard } from './components/SuccessCard'
+
+export const WinnerController = {
   processSubmission: function (compNum: number, profileUrl: string) {
     const ss = SpreadsheetApp.getActiveSpreadsheet()
     const rawDataSheet = ss.getSheetByName("Raw Data") || this.setupRawDataSheet(ss)
@@ -57,11 +60,3 @@ const WinnerController = {
   }
 }
 
-/**
- * Global function - GAS wrapper for sidebar access
- */
-function processFromSidebar (compNum: number, profileUrl: string) {
-  return WinnerController.processSubmission(compNum, profileUrl)
-}
-
-(globalThis as GlobalThis).processFromSidebar = processFromSidebar

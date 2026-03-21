@@ -1,10 +1,10 @@
+import { UrlService } from "../services/UrlService"
 
 /**
  * Represents the view model for the Success Confirmation Card.
  * Handles the logic for background colors and badge lists before rendering.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-class SuccessCard {
+export class SuccessCard {
   private userName: string
   private userId: string
   private winCount: number
@@ -23,7 +23,6 @@ class SuccessCard {
   render (): string {
     const template = HtmlService.createTemplateFromFile('SuccessCard')
 
-    // Pass data potentially validated logic to the template
     template.name = this.userName
     template.count = this.winCount
     template.badges = this.badges

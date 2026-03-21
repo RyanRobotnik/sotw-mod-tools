@@ -1,4 +1,4 @@
-# sotw-mod-tools
+# Screenshot of the Week Moderator Tools
 
 GScript Tools for Google Sheets. Used for managing the Screenshot of the Week competition on Arqade (Gaming Stack Exchange).
 
@@ -18,6 +18,7 @@ Before getting started, make sure you have the following:
 - [Node.js](https://nodejs.org/) v18 or later
 - [npm](https://www.npmjs.com/) (included with Node.js)
 - A Google account with access to Google Sheets and Google Apps Script
+- A Unix-like terminal (Git Bash, WSL, Cmder, zsh, bash) is recommended for Windows users to support build scripts.
 
 ## Installation
 
@@ -95,13 +96,13 @@ Replace `<GOOGLE_SHEET_ID>` with the ID of your target Google Sheet (found in th
 
 ### Building
 
-Compile TypeScript source files to JavaScript:
+Compile and bundle TypeScript source files to a single JavaScript file using Webpack:
 
 ```bash
 npm run build
 ```
 
-Compiled files are output to the `dist/` directory. The `appsscript.json` manifest is also copied there automatically.
+The compiled code is output to `dist/Code.js`. The `appsscript.json` manifest and HTML templates are also copied to `dist/` automatically.
 
 ### Linting
 
@@ -129,16 +130,10 @@ npm test
 
 ### Push Code
 
-After building, push the compiled code to your linked Apps Script project:
+Build and push the compiled code to your linked Apps Script project in one step:
 
 ```bash
-npm run clasp:push
-```
-
-Or build and push in one step:
-
-```bash
-npm run deploy
+npm run push
 ```
 
 ### Create a New Version
@@ -146,7 +141,7 @@ npm run deploy
 Create a new versioned deployment (useful for stable releases):
 
 ```bash
-npm run clasp:deploy
+npm run clasp:version
 ```
 
 ### Pull Latest Code
@@ -175,8 +170,12 @@ npm run clasp:open
 | `npm run lint:fix` | Run ESLint and auto-fix issues |
 | `npm run clasp:login` | Authenticate with your Google account |
 | `npm run clasp:create` | Create a new Apps Script project (one-time setup) |
-| `npm run clasp:push` | Push compiled code to Apps Script |
+| `npm run clasp:push` | Pusand bundle TypeScript source files using Webpack |
+| `npm test` | Run the test suite with Jest |
+| `npm run lint` | Run ESLint on source files |
+| `npm run lint:fix` | Run ESLint and auto-fix issues |
+| `npm run clasp:login` | Authenticate with your Google account |
+| `npm run push` | Build and push code to Apps Script |
 | `npm run clasp:pull` | Pull latest code from Apps Script |
-| `npm run clasp:deploy` | Create a new versioned deployment |
-| `npm run clasp:open` | Open project in Apps Script web editor |
-| `npm run deploy` | Build and push code to Apps Script |
+| `npm run clasp:version` | Create a new versioned deployment |
+| `npm run clasp:open` | Open project in Apps Script web editor

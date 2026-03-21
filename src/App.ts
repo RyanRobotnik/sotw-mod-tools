@@ -1,4 +1,4 @@
-/** @OnlyCurrentDoc */
+import { WinnerController } from './WinnerController'
 
 /**
  * The entry point for the Google Sheets add-on. It creates the custom menu item in the Google Sheets UI that allows
@@ -11,7 +11,7 @@ function onOpen () {
 }
 
 function showSidebar () {
-  const template = HtmlService.createTemplateFromFile('MainSidebar')
+  const template = HtmlService.createTemplateFromFile('Sidebar')
 
   // Inject initial state
   template.nextCompNum = WinnerController.getNextCompNumber()
@@ -23,10 +23,18 @@ function showSidebar () {
   SpreadsheetApp.getUi().showSidebar(html)
 }
 
-/**
- * Google Apps Script (GAS) doesn't support ES modules (import/export syntax), so we assign functions to the global
- * 'this' (which is the GAS Global scope). This tells ESLint "someone is using this", so it doesn't mark it as unused,
- * and maintains it as a top-level function for GAS.
- */
-(globalThis as GlobalThis).onOpen = onOpen;
-(globalThis as GlobalThis).showSidebar = showSidebar
+function processFromSidebar (compNum: number, profileUrl: string) {
+  return WinnerController.processSubmission(compNum, profileUrl)
+}
+
+// Expose to GAS
+interface GasGlobal {
+  onOpen: typeof onOpen
+  showSidebar: typeof showSidebar
+  processFromSidebar: typeof processFromSidebar
+}
+
+declare const global: GasGlobal
+global.onOpen = onOpen
+global.showSidebar = showSidebar
+global.processFromSidebar = processFromSidebar
