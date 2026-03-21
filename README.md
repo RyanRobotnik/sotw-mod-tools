@@ -42,7 +42,7 @@ This project uses [clasp](https://github.com/google/clasp) (Command Line Apps Sc
 ### Log in to Google
 
 ```bash
-npm run clasp:login
+npm run login
 ```
 
 A browser window will open asking you to authorize clasp to access your Google account. Sign in and grant the requested permissions.
@@ -76,15 +76,7 @@ Your `.clasp.json` should look like this:
 
 ### Create a New Apps Script Project
 
-> **Note:** This is a one-time setup step. Skip this if you are linking to an existing project (see above).
-
-To create a new Apps Script project, run:
-
-```bash
-npm run clasp:create
-```
-
-To link the new project to an existing Google Sheet, pass the sheet ID via the `--parentId` flag:
+> **Note:** This is a one-time setup step. Skip this if you are linking to an existing project (see above). To link the new project to an existing Google Sheet, pass the sheet ID via the `--parentId` flag:
 
 ```bash
 npx clasp create --title "sotw-mod-tools" --type sheets --parentId "<GOOGLE_SHEET_ID>"
@@ -118,14 +110,6 @@ Auto-fix lint issues where possible:
 npm run lint:fix
 ```
 
-### Testing
-
-Run the test suite:
-
-```bash
-npm test
-```
-
 ## Deploying to Apps Script
 
 ### Push Code
@@ -141,15 +125,7 @@ npm run push
 Create a new versioned deployment (useful for stable releases):
 
 ```bash
-npm run clasp:version
-```
-
-### Pull Latest Code
-
-Pull the latest code from Apps Script to your local machine:
-
-```bash
-npm run clasp:pull
+npm run push:version
 ```
 
 ### Open in Apps Script Editor
@@ -157,7 +133,7 @@ npm run clasp:pull
 Open the project directly in the Apps Script web editor:
 
 ```bash
-npm run clasp:open
+npm run open
 ```
 
 ## Available Scripts
@@ -165,17 +141,9 @@ npm run clasp:open
 | Script | Description |
 |--------|-------------|
 | `npm run build` | Compile TypeScript source files to JavaScript |
-| `npm test` | Run the test suite with Jest |
-| `npm run lint` | Run ESLint on source files |
-| `npm run lint:fix` | Run ESLint and auto-fix issues |
-| `npm run clasp:login` | Authenticate with your Google account |
-| `npm run clasp:create` | Create a new Apps Script project (one-time setup) |
-| `npm run clasp:push` | Pusand bundle TypeScript source files using Webpack |
-| `npm test` | Run the test suite with Jest |
-| `npm run lint` | Run ESLint on source files |
-| `npm run lint:fix` | Run ESLint and auto-fix issues |
-| `npm run clasp:login` | Authenticate with your Google account |
 | `npm run push` | Build and push code to Apps Script |
-| `npm run clasp:pull` | Pull latest code from Apps Script |
-| `npm run clasp:version` | Create a new versioned deployment |
-| `npm run clasp:open` | Open project in Apps Script web editor
+| `npm run lint` | Run ESLint on source files |
+| `npm run lint:fix` | Run ESLint and auto-fix issues |
+| `npm run login` | Authenticate with your Google account |
+| `npm run push:version` | Create a new versioned deployment |
+| `npm run open` | Open project in Apps Script web editor

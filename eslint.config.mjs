@@ -28,6 +28,6 @@ export default defineConfig(
   },
   {
     name: "Global ignores",
-    ignores: ['dist/**', 'node_modules/**', 'test/**'],
+    ignores: ['dist/**', 'node_modules/**'],
   },
 );
