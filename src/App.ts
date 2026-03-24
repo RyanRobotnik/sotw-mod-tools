@@ -6,12 +6,12 @@ import { WinnerController } from './WinnerController'
  */
 function onOpen () {
   SpreadsheetApp.getUi().createMenu('🔷 Moderator Tools')
-    .addItem('🏆 Add Winner', 'showSidebar')
+    .addItem('🏆 Add Winner', 'showWinnerSidebar')
     .addToUi()
 }
 
-function showSidebar () {
-  const template = HtmlService.createTemplateFromFile('Sidebar')
+function showWinnerSidebar () {
+  const template = HtmlService.createTemplateFromFile('WinnerSidebar')
 
   // Inject initial state
   template.nextCompNum = WinnerController.getNextCompNumber()
@@ -23,18 +23,18 @@ function showSidebar () {
   SpreadsheetApp.getUi().showSidebar(html)
 }
 
-function processFromSidebar (compNum: number, profileUrl: string) {
+function processWinnerFormSubmit (compNum: number, profileUrl: string) {
   return WinnerController.processSubmission(compNum, profileUrl)
 }
 
 // Expose to GAS
 interface GasGlobal {
   onOpen: typeof onOpen
-  showSidebar: typeof showSidebar
-  processFromSidebar: typeof processFromSidebar
+  showWinnerSidebar: typeof showWinnerSidebar
+  processWinnerFormSubmit: typeof processWinnerFormSubmit
 }
 
 declare const global: GasGlobal
 global.onOpen = onOpen
-global.showSidebar = showSidebar
-global.processFromSidebar = processFromSidebar
+global.showWinnerSidebar = showWinnerSidebar
+global.processWinnerFormSubmit = processWinnerFormSubmit

@@ -18,8 +18,7 @@
     "push:version": "npm run build && clasp deploy",
     "lint": "eslint './src/**/*.ts'",
     "lint:fix": "eslint './src/**/*.ts' --fix",
-    "clasp:login": "clasp login",
-    "clasp:open": "clasp open"
+    "clasp:login": "clasp login"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

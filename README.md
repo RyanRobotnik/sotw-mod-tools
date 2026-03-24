@@ -42,7 +42,7 @@ This project uses [clasp](https://github.com/google/clasp) (Command Line Apps Sc
 ### Log in to Google
 
 ```bash
-npm run login
+npm run clasp:login
 ```
 
 A browser window will open asking you to authorize clasp to access your Google account. Sign in and grant the requested permissions.
@@ -128,22 +128,15 @@ Create a new versioned deployment (useful for stable releases):
 npm run push:version
 ```
 
-### Open in Apps Script Editor
-
-Open the project directly in the Apps Script web editor:
-
-```bash
-npm run open
-```
 
 ## Available Scripts
 
 | Script | Description |
 |--------|-------------|
+| `npm run clean` | Deletes the /dist directory |
 | `npm run build` | Compile TypeScript source files to JavaScript |
 | `npm run push` | Build and push code to Apps Script |
+| `npm run push:version` | Create a new versioned deployment |
 | `npm run lint` | Run ESLint on source files |
 | `npm run lint:fix` | Run ESLint and auto-fix issues |
-| `npm run login` | Authenticate with your Google account |
-| `npm run push:version` | Create a new versioned deployment |
-| `npm run open` | Open project in Apps Script web editor
+| `npm run clasp:login` | Authenticate with your Google account |

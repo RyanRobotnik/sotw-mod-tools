@@ -90,7 +90,6 @@
           status.innerHTML = res.html;
           status.style.display = 'block';
           document.getElementById('profileUrl').value = '';
-          document.getElementById('compNum').value = res.nextCompNum;
         })
         .withFailureHandler((err) => {
           btn.disabled = false;
@@ -98,7 +97,7 @@
           status.innerHTML = `<div style="padding:10px; background:#fce8e6; color:#d93025; border:1px solid #fad2cf; border-radius:4px;">${err.message}</div>`;
           status.style.display = 'block';
         })
-        .processFromSidebar(compNum, profileUrl);
+        .processWinnerFormSubmit(compNum, profileUrl);
     }
   </script>
 </body>
