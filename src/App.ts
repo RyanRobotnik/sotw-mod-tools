@@ -5,7 +5,7 @@ import { WinnerController } from './WinnerController'
  * users with edit privileges to access the SotW (Screenshot of the Week) Moderator Tools. 
  */
 function onOpen () {
-  SpreadsheetApp.getUi().createMenu('🔷 SotW Moderator Tools')
+  SpreadsheetApp.getUi().createMenu('🔷 Moderator Tools')
     .addItem('🏆 Add Winner', 'showSidebar')
     .addToUi()
 }
@@ -17,7 +17,7 @@ function showSidebar () {
   template.nextCompNum = WinnerController.getNextCompNumber()
 
   const html = template.evaluate()
-    .setTitle('SotW Moderator Tools')
+    .setTitle('Moderator Tools')
     .setWidth(300)
 
   SpreadsheetApp.getUi().showSidebar(html)

@@ -5,26 +5,29 @@ import { SuccessCard } from './components/SuccessCard'
 export const WinnerController = {
   processSubmission: function (compNum: number, profileUrl: string) {
     const ss = SpreadsheetApp.getActiveSpreadsheet()
-    const rawDataSheet = ss.getSheetByName("Raw Data") || this.setupRawDataSheet(ss)
+    const compDataSheet = ss.getSheetByName("Competition Data") || this.setupCompetitionDataSheet(ss)
 
-    const { userId, userName } = UrlService.parseProfileUrl(profileUrl)
+    if (!UrlService.isValidProfileUrl(profileUrl)) {
+      throw new Error("Invalid Arqade profile URL")
+    }
+
+    const { userId, userName, normalisedUrl } = UrlService.extractProfileData(profileUrl)
 
     // Input Validation: Duplicate (A user can only win the same competition once)
-    const data = rawDataSheet.getDataRange().getValues()
+    const data = compDataSheet.getDataRange().getValues()
     const isDuplicate = data.some(row =>
-      row[0].toString() === compNum.toString() &&
-      row[2].toString() === userId.toString()
+      row[0].toString() === compNum.toString() && row[2].toString() === userId.toString()
     )
 
     if (isDuplicate) {
-      throw new Error(`${userName} is already logged for Comp #${compNum}`)
+      throw new Error(`${userName} is already logged against Competition #${compNum}`)
     }
 
     // Persist data (write row to Sheet)
-    rawDataSheet.appendRow([compNum, userName, userId, profileUrl, new Date()])
+    compDataSheet.appendRow([compNum, userName, userId, normalisedUrl, new Date()])
 
     // Calculate Status
-    const totalWins = this.getWinCount(rawDataSheet, userId)
+    const totalWins = this.getWinCount(compDataSheet, userId)
     const badges = BadgeService.getBadgesToAward(totalWins)
 
     // Render SuccessCard Component
@@ -37,7 +40,7 @@ export const WinnerController = {
   },
 
   getNextCompNumber: function () {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Raw Data")
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Competition Data")
     if (!sheet) return 1
     const data = sheet.getDataRange().getValues()
     if (data.length <= 1) return 1
@@ -52,10 +55,24 @@ export const WinnerController = {
     return data.filter(row => row[2].toString() === userId.toString()).length
   },
 
-  setupRawDataSheet: function (ss: GoogleAppsScript.Spreadsheet.Spreadsheet): GoogleAppsScript.Spreadsheet.Sheet {
-    const sheet = ss.insertSheet("Raw Data")
+  setupCompetitionDataSheet: function (ss: GoogleAppsScript.Spreadsheet.Spreadsheet): GoogleAppsScript.Spreadsheet.Sheet {
+    const sheet = ss.insertSheet("Competition Data")
     sheet.appendRow(["Comp #", "User Name", "User ID", "Profile URL", "Timestamp"])
-    sheet.getRange("1:1").setFontWeight("bold")
+
+    // Header Formatting
+    const header = sheet.getRange("1:1")
+    header.setFontWeight("bold")
+    header.setFontSize(12)
+
+    // Conditional Formatting
+    const range = sheet.getRange("A2:A")
+    const rule = SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=COUNTIF($A$2:$A, A2)>1')
+      .setBold(true)
+      .setRanges([range])
+      .build()
+    sheet.setConditionalFormatRules([rule])
+
     return sheet
   }
 }
