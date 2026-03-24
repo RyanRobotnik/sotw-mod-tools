@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack",
     "push": "npm run build && clasp push",
-    "push:version": "clasp deploy",
+    "push:version": "npm run build && clasp deploy",
     "lint": "eslint './src/**/*.ts'",
     "lint:fix": "eslint './src/**/*.ts' --fix",
     "clasp:login": "clasp login",

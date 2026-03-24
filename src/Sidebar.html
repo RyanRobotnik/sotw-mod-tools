@@ -1,65 +1,106 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <style>
-      body { font-family: sans-serif; padding: 15px; background-color: #f8f9fa; }
-      .input-group { margin-bottom: 15px; }
-      label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 12px; color: #555; }
-      input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
-      button { 
-        width: 100%; padding: 10px; background-color: #1a73e8; color: white; 
-        border: none; border-radius: 4px; cursor: pointer; font-weight: bold;
-      }
-      button:hover { background-color: #1765cc; }
-      button:disabled { background-color: #ccc; }
-      #status { margin-top: 15px; display: none; }
-    </style>
-  </head>
-  <body>
-    <h3>Add Winner</h3>
-    <div class="input-group">
-      <label>Competition Number</label>
-      <input type="number" id="compNum" min="1" value="<?= nextCompNum ?>" placeholder="e.g. 154" />
-    </div>
-    <div class="input-group">
-      <label>Arqade Profile URL</label>
-      <input type="text" id="profileUrl" placeholder="Paste link here..." />
-    </div>
-    <button onclick="submit()">Add Winner</button>
-    <div id="status"></div>
 
-    <script>
-      function submit() {
-        const btn = document.querySelector('button');
-        const status = document.getElementById('status');
-        const compNum = document.getElementById('compNum').value;
-        const profileUrl = document.getElementById('profileUrl').value;
+<head>
+  <base target="_top">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 15px;
+      background-color: #f8f9fa;
+    }
 
-        if (!compNum || compNum < 1) { alert("Comp # must be 1 or greater."); return; }
-        if (!profileUrl) { alert("Paste a profile URL!"); return; }
+    .input-group {
+      margin-bottom: 15px;
+    }
 
-        btn.disabled = true;
-        btn.innerText = 'Processing...';
-        status.style.display = 'none';
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: #555;
+    }
 
-        google.script.run
-          .withSuccessHandler((res) => {
-            btn.disabled = false;
-            btn.innerText = 'Add Winner';
-            status.innerHTML = res.html;
-            status.style.display = 'block';
-            document.getElementById('profileUrl').value = '';
-            document.getElementById('compNum').value = res.nextCompNum;
-          })
-          .withFailureHandler((err) => {
-            btn.disabled = false;
-            btn.innerText = 'Add Winner';
-            status.innerHTML = `<div style="padding:10px; background:#fce8e6; color:#d93025; border:1px solid #fad2cf; border-radius:4px;">Error: ${err.message}</div>`;
-            status.style.display = 'block';
-          })
-          .processFromSidebar(compNum, profileUrl);
-      }
-    </script>
-  </body>
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #1765cc;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+    }
+
+    #status {
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Add Winner</h3>
+  <div class="input-group">
+    <label>Competition Number</label>
+    <input type="number" id="compNum" min="1" value="<?= nextCompNum ?>" placeholder="e.g. 154" />
+  </div>
+  <div class="input-group">
+    <label>Arqade Profile URL</label>
+    <input type="text" id="profileUrl" placeholder="Paste link here..." />
+  </div>
+  <button onclick="submit()">Add Winner</button>
+  <div id="status"></div>
+
+  <script>
+    function submit() {
+      const btn = document.querySelector('button');
+      const status = document.getElementById('status');
+      const compNum = document.getElementById('compNum').value;
+      const profileUrl = document.getElementById('profileUrl').value;
+
+      if (!compNum || compNum < 1) { alert("Comp # must be 1 or greater."); return; }
+      if (!profileUrl) { alert("Paste a profile URL!"); return; }
+
+      btn.disabled = true;
+      btn.innerText = 'Processing...';
+      status.style.display = 'none';
+
+      google.script.run
+        .withSuccessHandler((res) => {
+          btn.disabled = false;
+          btn.innerText = 'Add Winner';
+          status.innerHTML = res.html;
+          status.style.display = 'block';
+          document.getElementById('profileUrl').value = '';
+          document.getElementById('compNum').value = res.nextCompNum;
+        })
+        .withFailureHandler((err) => {
+          btn.disabled = false;
+          btn.innerText = 'Add Winner';
+          status.innerHTML = `<div style="padding:10px; background:#fce8e6; color:#d93025; border:1px solid #fad2cf; border-radius:4px;">${err.message}</div>`;
+          status.style.display = 'block';
+        })
+        .processFromSidebar(compNum, profileUrl);
+    }
+  </script>
+</body>
+
 </html>
