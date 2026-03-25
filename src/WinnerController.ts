@@ -11,14 +11,14 @@ export const WinnerController = {
 
     const { userId, userName, normalisedUrl } = UrlService.extractProfileData(profileUrl)
 
-    if (SpreadsheetService.isDuplicate(compNum, userId)) {
+    if (SpreadsheetService.isDuplicateEntry(compNum, userId)) {
       throw new Error(`${userName} is already logged against Competition #${compNum}`)
     }
 
     SpreadsheetService.addWinner(compNum, userName, userId, normalisedUrl)
 
     // Calculate Status
-    const usersTotalWins = SpreadsheetService.getWinCount(userId)
+    const usersTotalWins = SpreadsheetService.getWinCountForUser(userId)
     const badges = BadgeService.getBadgesToAward(usersTotalWins)
 
     return {
