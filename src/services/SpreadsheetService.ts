@@ -1,3 +1,19 @@
+const SHEET_CONFIG = {
+  HEADER_ROW_INDEX: 3,
+  HEADER_HEIGHT: 35,
+  HEADER_WEIGHT: "bold",
+  DATA_ROW_HEIGHT: 28,
+  COLORS: {
+    HEADER_BG: "#055fb7",
+    HEADER_FONT: "white",
+    USER_FONT: "#434343",
+    BRONZE: "#d19b4f",
+    SILVER: "#d9d9d9",
+    GOLD: "#ffe07a"
+  },
+  BANDING_THEME: SpreadsheetApp.BandingTheme.LIGHT_GREY
+}
+
 export const SpreadsheetService = {
   /**
    * Calculates the next competition number based on existing data.
@@ -111,10 +127,12 @@ export const SpreadsheetService = {
     headerRange.setValues([["Competition #", "Winner", "User ID", "Profile URL"]])
 
     // Header Formatting
-    headerRange.setFontWeight("bold")
-    headerRange.setBackground("#055fb7")
-    headerRange.setFontColor("white")
-    sheet.setFrozenRows(3)
+    headerRange.setFontWeight(SHEET_CONFIG.HEADER_WEIGHT as GoogleAppsScript.Spreadsheet.FontWeight)
+    headerRange.setBackground(SHEET_CONFIG.COLORS.HEADER_BG)
+    headerRange.setFontColor(SHEET_CONFIG.COLORS.HEADER_FONT)
+    sheet.setFrozenRows(SHEET_CONFIG.HEADER_ROW_INDEX)
+    sheet.setRowHeight(SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.HEADER_HEIGHT) // Header slightly taller
+    sheet.setRowHeights(SHEET_CONFIG.HEADER_ROW_INDEX + 1, sheet.getMaxRows() - SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.DATA_ROW_HEIGHT) // data rows height
 
     // Hide the URL column
     sheet.hideColumns(4)
@@ -123,17 +141,19 @@ export const SpreadsheetService = {
     const range = sheet.getRange("A3:D")
     range.createFilter()
 
-    const bandingRange = sheet.getRange("A4:D")
-    bandingRange.applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, false, false)
+    const dataRange = sheet.getRange("A4:D")
+    dataRange.applyRowBanding(SHEET_CONFIG.BANDING_THEME, false, false)
+    dataRange.setVerticalAlignment("middle")
 
     const userColumn = sheet.getRange("B4:B")
-    userColumn.setFontColor("#434343") // Dark grey 4
+    userColumn.setFontColor(SHEET_CONFIG.COLORS.USER_FONT) // Dark grey 4
 
     // Conditional highlighting for tie wins
     const compColumn = sheet.getRange("A4:A")
     const rule = SpreadsheetApp.newConditionalFormatRule()
       .whenFormulaSatisfied('=COUNTIF($A$4:$A, A4)>1')
       .setBold(true)
+      .setBackground("#a4c2f4")
       .setRanges([compColumn])
       .build()
     sheet.setConditionalFormatRules([rule])
@@ -151,29 +171,60 @@ export const SpreadsheetService = {
     const sheet = ss.insertSheet("Leaderboard", 0)
 
     // Header at row 3
-    const headerRange = sheet.getRange("A3:B3")
-    headerRange.setValues([["User", "Wins"]])
+    const headerRange = sheet.getRange("A3:E3")
+    headerRange.setValues([["ID", "User", "Bronze", "Silver", "Gold"]])
 
-    headerRange.setFontWeight("bold")
-    headerRange.setBackground("#055fb7")
-    headerRange.setFontColor("white")
-    sheet.setFrozenRows(3)
+    headerRange.setFontWeight(SHEET_CONFIG.HEADER_WEIGHT as GoogleAppsScript.Spreadsheet.FontWeight)
+    headerRange.setBackground(SHEET_CONFIG.COLORS.HEADER_BG)
+    headerRange.setFontColor(SHEET_CONFIG.COLORS.HEADER_FONT)
+    sheet.setFrozenRows(SHEET_CONFIG.HEADER_ROW_INDEX)
+    sheet.setRowHeight(SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.HEADER_HEIGHT) // Header slightly taller
+    sheet.setRowHeights(SHEET_CONFIG.HEADER_ROW_INDEX + 1, sheet.getMaxRows() - SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.DATA_ROW_HEIGHT) // data rows height
 
-    const formula = `=LET(
-  ids, 'Competitions'!C4:C, 
-  uids, UNIQUE(FILTER(ids, ids<>"")), 
-  urls, XLOOKUP(uids, 'Competitions'!C:C, 'Competitions'!D:D, "", 0, -1), 
-  names, XLOOKUP(uids, 'Competitions'!C:C, 'Competitions'!B:B, "", 0, -1), 
-  counts, COUNTIF(ids, uids), 
-  HSTACK(HYPERLINK(urls, names), counts)
-)`
-    sheet.getRange("A4").setFormula(formula)
+    // Hide ID column
+    sheet.hideColumns(1)
 
-    const bandingRange = sheet.getRange("A4:B")
-    bandingRange.applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, false, false)
+    // ID Column (A) - Unique IDs from Competitions
+    sheet.getRange("A4").setFormula(`=UNIQUE(FILTER('Competitions'!C4:C, 'Competitions'!C4:C<>""))`)
+    // User Column (B) - Hyperlink using ID lookup
+    sheet.getRange("B4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", HYPERLINK(XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!D:D), XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!B:B)))))`)
+    // Wins/Bronze Column (C) - Count wins by ID
+    sheet.getRange("C4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", COUNTIF('Competitions'!C:C, uid))))`)
+    // Silver Column (D)
+    sheet.getRange("D4").setFormula(`=MAP(C4:C, LAMBDA(wins, IF(OR(wins="", wins<5), "", FLOOR(wins/5))))`)
+    // Gold Column (E)
+    sheet.getRange("E4").setFormula(`=MAP(C4:C, LAMBDA(wins, IF(OR(wins="", wins<10), "", FLOOR(wins/10))))`)
 
-    const userColumn = sheet.getRange("A4:A")
-    userColumn.setFontColor("#434343") // Dark grey 4
+    const dataRange = sheet.getRange("A4:E")
+    dataRange.applyRowBanding(SHEET_CONFIG.BANDING_THEME, false, false)
+    dataRange.setVerticalAlignment("middle")
+
+    const userColumn = sheet.getRange("B4:B")
+    userColumn.setFontColor(SHEET_CONFIG.COLORS.USER_FONT)
+
+    // Conditional Formatting for Bronze, Silver, Gold
+    const bronzeRule = SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=C4<>""')
+      .setBold(true)
+      .setBackground(SHEET_CONFIG.COLORS.BRONZE)
+      .setRanges([sheet.getRange("C4:C")])
+      .build()
+
+    const silverRule = SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=D4<>""')
+      .setBold(true)
+      .setBackground(SHEET_CONFIG.COLORS.SILVER)
+      .setRanges([sheet.getRange("D4:D")])
+      .build()
+
+    const goldRule = SpreadsheetApp.newConditionalFormatRule()
+      .whenFormulaSatisfied('=E4<>""')
+      .setBold(true)
+      .setBackground(SHEET_CONFIG.COLORS.GOLD)
+      .setRanges([sheet.getRange("E4:E")])
+      .build()
+
+    sheet.setConditionalFormatRules([bronzeRule, silverRule, goldRule])
 
     return sheet
   },
