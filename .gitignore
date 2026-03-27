@@ -9,6 +9,8 @@ node_modules/
 
 # clasp project config (contains user-specific script IDs — use .clasp.json.example as a template)
 .clasp.json
+clasp.dev.json
+clasp.prod.json
 
 # Source maps
 *.js.map

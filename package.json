@@ -14,8 +14,10 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack",
-    "push": "npm run build && clasp push",
-    "push:version": "npm run build && clasp deploy",
+    "push": "npm run push:dev",
+    "push:dev": "npm run build && clasp push -P clasp.dev.json",
+    "push:prod": "npm run build && clasp push -P clasp.prod.json",
+    "deploy:prod": "npm run build && clasp push -P clasp.prod.json && clasp deploy -P clasp.prod.json",
     "lint": "eslint './src/**/*.ts'",
     "lint:fix": "eslint './src/**/*.ts' --fix",
     "clasp:login": "clasp login"
