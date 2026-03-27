@@ -66,8 +66,9 @@ export const SpreadsheetService = {
    */
   addWinner: function (compNum: number, userName: string, userId: string, profileUrl: string): void {
     const sheet = this.getCompetitionSheet_()
-    const userHyperlink = `=HYPERLINK("${profileUrl}", "${userName}")`
-    sheet.appendRow([compNum, userHyperlink, userId, profileUrl])
+    const nextRow = sheet.getLastRow() + 1
+    const userHyperlink = `=HYPERLINK(D${nextRow}, E${nextRow})`
+    sheet.appendRow([compNum, userHyperlink, userId, profileUrl, userName, "Active"])
 
     // Ensures the Leaderboard sheet is created if missing, after adding a winner
     this.getLeaderboardSheet_()
@@ -123,8 +124,8 @@ export const SpreadsheetService = {
   setupCompetitionsSheet_: function (ss: GoogleAppsScript.Spreadsheet.Spreadsheet): GoogleAppsScript.Spreadsheet.Sheet {
     const sheet = ss.insertSheet("Competitions")
 
-    const headerRange = sheet.getRange("A3:D3")
-    headerRange.setValues([["Competition #", "Winner", "User ID", "Profile URL"]])
+    const headerRange = sheet.getRange("A3:F3")
+    headerRange.setValues([["Competition #", "Winner", "User ID", "Profile URL", "Name", "Status"]])
 
     // Header Formatting
     headerRange.setFontWeight(SHEET_CONFIG.HEADER_WEIGHT as GoogleAppsScript.Spreadsheet.FontWeight)
@@ -134,14 +135,14 @@ export const SpreadsheetService = {
     sheet.setRowHeight(SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.HEADER_HEIGHT) // Header slightly taller
     sheet.setRowHeights(SHEET_CONFIG.HEADER_ROW_INDEX + 1, sheet.getMaxRows() - SHEET_CONFIG.HEADER_ROW_INDEX, SHEET_CONFIG.DATA_ROW_HEIGHT) // data rows height
 
-    // Hide the URL column
-    sheet.hideColumns(4)
+    // Hide the User ID, Profile URL, Name, and Status columns
+    sheet.hideColumns(3, 4)
 
     // Table Styling
-    const range = sheet.getRange("A3:D")
+    const range = sheet.getRange("A3:F")
     range.createFilter()
 
-    const dataRange = sheet.getRange("A4:D")
+    const dataRange = sheet.getRange("A4:F")
     dataRange.applyRowBanding(SHEET_CONFIG.BANDING_THEME, false, false)
     dataRange.setVerticalAlignment("middle")
 
@@ -184,12 +185,12 @@ export const SpreadsheetService = {
     // Hide ID column
     sheet.hideColumns(1)
 
-    // ID Column (A) - Unique IDs from Competitions
-    sheet.getRange("A4").setFormula(`=UNIQUE(FILTER('Competitions'!C4:C, 'Competitions'!C4:C<>""))`)
+    // ID Column (A) - Unique IDs from Competitions, excluding Deleted, Sorted by Name
+    sheet.getRange("A4").setFormula(`=LET(uids, UNIQUE(FILTER('Competitions'!C4:C, 'Competitions'!C4:C<>"", 'Competitions'!F4:F<>"Deleted")), names, MAP(uids, LAMBDA(id, XLOOKUP(id, 'Competitions'!C:C, 'Competitions'!E:E))), sorted, SORT({uids, names}, 2, TRUE), INDEX(sorted, 0, 1))`)
     // User Column (B) - Hyperlink using ID lookup
-    sheet.getRange("B4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", HYPERLINK(XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!D:D), XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!B:B)))))`)
-    // Wins/Bronze Column (C) - Count wins by ID
-    sheet.getRange("C4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", COUNTIF('Competitions'!C:C, uid))))`)
+    sheet.getRange("B4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", HYPERLINK(XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!D:D), XLOOKUP(uid, 'Competitions'!C:C, 'Competitions'!E:E)))))`)
+    // Wins/Bronze Column (C) - Count active wins by ID
+    sheet.getRange("C4").setFormula(`=MAP(A4:A, LAMBDA(uid, IF(uid="", "", COUNTIFS('Competitions'!C:C, uid, 'Competitions'!F:F, "<>Deleted"))))`)
     // Silver Column (D)
     sheet.getRange("D4").setFormula(`=MAP(C4:C, LAMBDA(wins, IF(OR(wins="", wins<5), "", FLOOR(wins/5))))`)
     // Gold Column (E)
