@@ -173,7 +173,7 @@ export const SpreadsheetService = {
 
     // Header at row 3
     const headerRange = sheet.getRange("A3:E3")
-    headerRange.setValues([["ID", "User", "Bronze", "Silver", "Gold"]])
+    headerRange.setValues([["ID", "User", "🥉 Screenshotter", "🥈 Screenthusiast", "🥇 Screenarcher"]])
 
     headerRange.setFontWeight(SHEET_CONFIG.HEADER_WEIGHT as GoogleAppsScript.Spreadsheet.FontWeight)
     headerRange.setBackground(SHEET_CONFIG.COLORS.HEADER_BG)
