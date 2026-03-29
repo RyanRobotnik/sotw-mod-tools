@@ -1,6 +1,7 @@
 import { WinnerController } from './WinnerController'
 
 /**
+ * @OnlyCurrentDoc
  * The entry point for the Google Sheets add-on. It creates the custom menu item in the Google Sheets UI that allows
  * users with edit privileges to access the SotW (Screenshot of the Week) Moderator Tools. 
  */
